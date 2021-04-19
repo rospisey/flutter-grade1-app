@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:grade1/view_pdf.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -41,77 +42,78 @@ class _MyHomePageState extends State<MyHomePage> {
   // }
   //
   final String assetsPath = kIsWeb ? '' : 'assets/';
+  List _data = [];
+
+  List<Map<String, dynamic>> value = [
+    {
+      'asset': 'pdf/grade-1(1).pdf',
+      'image': 'image/grade1-1(1).jpg',
+      'name': 'Khmer Literature'
+    },
+    {
+      'asset': 'pdf/grade-1(2).pdf',
+      'image': 'image/grade1-1(2).jpg',
+      'name': 'Mathematic'
+    },
+    {
+      'asset': 'pdf/grade-1(3).pdf',
+      'image': 'image/grade1-1(3).jpg',
+      'name': 'Sociology'
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        backgroundColor: Colors.black.withOpacity(0.7),
-        title: Text(
-          widget.title,
-          textAlign: TextAlign.left,
+        appBar: AppBar(
+          centerTitle: false,
+          backgroundColor: Colors.black.withOpacity(0.7),
+          title: Text(
+            widget.title,
+            textAlign: TextAlign.left,
+          ),
         ),
-      ),
-      body: Center(
-        child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              childAspectRatio: 1,
-              children: [
-                GestureDetector(
+        body: new StaggeredGridView.countBuilder(
+          crossAxisCount: 2,
+          itemCount: value.length,
+          itemBuilder: (BuildContext context, int index) => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Flexible(
+                flex: 3,
+                child: GestureDetector(
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => ViewPDF(
-                            path: assetsPath + 'pdf/grade-1(1).pdf',
+                            path: assetsPath + value[index]['asset'],
                           ))),
                   child: Card(
                     color: Colors.black.withOpacity(0.7),
                     shadowColor: Colors.grey,
-                    elevation: 5,
+                    elevation: 2,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25)),
+                        borderRadius: BorderRadius.circular(15)),
                     child: Image(
-                      image: AssetImage(assetsPath + 'image/grade1-1(1).jpg'),
+                      fit: BoxFit.contain,
+                      image: AssetImage(
+                        assetsPath + value[index]['image'],
+                      ),
                     ),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ViewPDF(
-                            path: assetsPath + 'pdf/grade-1(2).pdf',
-                          ))),
-                  child: Card(
-                    color: Colors.black.withOpacity(0.7),
-                    shadowColor: Colors.grey,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25)),
-                    child: Image(
-                      image: AssetImage(assetsPath + 'image/grade1-1(2).jpg'),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ViewPDF(
-                            path: assetsPath + 'pdf/grade-1(3).pdf',
-                          ))),
-                  child: Card(
-                    color: Colors.black.withOpacity(0.7),
-                    shadowColor: Colors.grey,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25)),
-                    child: Image(
-                      image: AssetImage(assetsPath + 'image/grade1-1(3).jpg'),
-                    ),
-                  ),
-                ),
-              ],
-            )),
-      ),
-    );
+              ),
+              Flexible(
+                flex: 1,
+                child: Center(
+                    child: Text(
+                  value[index]['name'],
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
+              )
+            ],
+          ),
+          staggeredTileBuilder: (int index) => new StaggeredTile.count(1, 1.5),
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 0,
+        ));
   }
 }
